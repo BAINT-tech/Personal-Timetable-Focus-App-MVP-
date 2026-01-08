@@ -61,6 +61,8 @@
   <div class="card">
     <strong>🔥 Streak:</strong> <span id="streak">0</span> days
     <div class="small">Consistency over motivation</div>
+    <div class="small">📆 Month progress: <span id="monthCount">0</span> active days</div>
+  </div>
   </div>  <div class="card">
     <h2>🌅 Morning – Learning</h2>
     <div class="task"><input type="checkbox" id="fx" /> Forex basics</div>
@@ -88,11 +90,13 @@
   </div>  <div class="card">
     <h2>📝 Notes</h2>
     <textarea id="notes" placeholder="What did I learn or notice today?"></textarea>
-  </div><button onclick="saveData()">Save Day</button>
+  </div><button onclick="saveData()">Save Day</button> <button onclick="requestNotify()" style="margin-left:8px">Enable Notifications</button> <button onclick="showMonthlyWrap()" style="margin-left:8px">Monthly Wrap</button>
 
   <script>
     const inputs = document.querySelectorAll('input, textarea, select');
-    const todayKey = new Date().toDateString();
+    const today = new Date();
+    const todayKey = today.toDateString();
+    const monthKey = today.getFullYear() + '-' + (today.getMonth()+1);
 
     function saveData() {
       inputs.forEach(el => {
@@ -102,7 +106,16 @@
           localStorage.setItem(el.id + todayKey, el.value);
         }
       });
+
+      let monthDays = JSON.parse(localStorage.getItem('month_' + monthKey)) || [];
+      if (!monthDays.includes(todayKey)) {
+        monthDays.push(todayKey);
+        localStorage.setItem('month_' + monthKey, JSON.stringify(monthDays));
+      }
+
       updateStreak();
+      updateMonth();
+      notify('Day saved ✔', 'Consistency beats motivation');
       alert('Saved ✔ Stay consistent');
     }
 
@@ -117,6 +130,30 @@
       document.getElementById('streak').innerText = streak;
     }
 
+    function updateMonth() {
+      const days = JSON.parse(localStorage.getItem('month_' + monthKey)) || [];
+      document.getElementById('monthCount').innerText = days.length;
+    }
+
+    function showMonthlyWrap() {
+      const days = JSON.parse(localStorage.getItem('month_' + monthKey)) || [];
+      alert(`📊 Monthly Wrap
+Active days: ${days.length}
+Streak: ${localStorage.getItem('streak') || 0}`);
+    }
+
+    function requestNotify() {
+      if ('Notification' in window) {
+        Notification.requestPermission();
+      }
+    }
+
+    function notify(title, body) {
+      if (Notification.permission === 'granted') {
+        new Notification(title, { body });
+      }
+    }
+
     window.onload = () => {
       inputs.forEach(el => {
         const saved = localStorage.getItem(el.id + todayKey);
@@ -129,6 +166,7 @@
         }
       });
       document.getElementById('streak').innerText = localStorage.getItem('streak') || 0;
+      updateMonth();
     };
   </script></body>
 </html>
