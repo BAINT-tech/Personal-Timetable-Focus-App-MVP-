@@ -88,6 +88,20 @@
       <option>High</option>
     </select>
   </div>  <div class="card">
+    <h2>🧮 Asset Value Calculator</h2>
+    <p class="small">Measure money into assets at same price.</p>
+    <input id="capital" type="number" placeholder="Your money (e.g. 100)" style="width:100%;margin-bottom:8px" />
+    <input id="price" type="number" placeholder="Asset price (e.g. 20)" style="width:100%;margin-bottom:8px" />
+    <button onclick="calculateAsset()">Calculate</button>
+    <p class="small">You can buy: <strong><span id="assetResult">0</span></strong> units</p>
+  </div>
+    <label class="small">Priority:</label>
+    <select id="airdrop_priority">
+      <option>Low</option>
+      <option>Medium</option>
+      <option>High</option>
+    </select>
+  </div>  <div class="card">
     <h2>📝 Notes</h2>
     <textarea id="notes" placeholder="What did I learn or notice today?"></textarea>
   </div><button onclick="saveData()">Save Day</button> <button onclick="requestNotify()" style="margin-left:8px">Enable Notifications</button> <button onclick="showMonthlyWrap()" style="margin-left:8px">Monthly Wrap</button>
@@ -151,6 +165,18 @@ Streak: ${localStorage.getItem('streak') || 0}`);
     function notify(title, body) {
       if (Notification.permission === 'granted') {
         new Notification(title, { body });
+      }
+    }
+
+    function calculateAsset() {
+      const capital = Number(document.getElementById('capital').value);
+      const price = Number(document.getElementById('price').value);
+      if (capital > 0 && price > 0) {
+        document.getElementById('assetResult').innerText = (capital / price).toFixed(4);
+      } else {
+        document.getElementById('assetResult').innerText = 0;
+      }
+    });
       }
     }
 
