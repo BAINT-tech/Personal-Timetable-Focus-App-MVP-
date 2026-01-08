@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Focus Timetable</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 16px;
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+    }
+    .card {
+      background: #020617;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .task {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    input[type="checkbox"] {
+      transform: scale(1.2);
+    }
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      background: #020617;
+      color: #e5e7eb;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .small {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 Daily Focus System</h1>
+  <p class="small">No pressure. Just show up.</p>  <div class="card">
+    <h2>🌅 Morning – Learning</h2>
+    <div class="task"><input type="checkbox" id="fx" /> Forex basics</div>
+    <div class="task"><input type="checkbox" id="crypto" /> Crypto market study</div>
+    <div class="task"><input type="checkbox" id="stocks" /> Stock concepts</div>
+  </div>  <div class="card">
+    <h2>🌤️ Afternoon – Observe</h2>
+    <div class="task"><input type="checkbox" id="charts" /> Watch charts (no trading)</div>
+    <div class="task"><input type="checkbox" id="news" /> Check market news</div>
+  </div>  <div class="card">
+    <h2>🌙 Evening – Research</h2>
+    <div class="task"><input type="checkbox" id="twitter" /> Twitter / Airdrop research</div>
+    <div class="task"><input type="checkbox" id="review" /> Daily review</div>
+  </div>  <div class="card">
+    <h2>📝 Notes</h2>
+    <textarea id="notes" placeholder="What did I learn or notice today?"></textarea>
+  </div><button onclick="saveData()">Save Day</button>
+
+  <script>
+    const inputs = document.querySelectorAll('input, textarea');
+
+    function saveData() {
+      inputs.forEach(el => {
+        if (el.type === 'checkbox') {
+          localStorage.setItem(el.id, el.checked);
+        } else {
+          localStorage.setItem(el.id, el.value);
+        }
+      });
+      alert('Saved ✔ Stay consistent');
+    }
+
+    window.onload = () => {
+      inputs.forEach(el => {
+        const saved = localStorage.getItem(el.id);
+        if (saved !== null) {
+          if (el.type === 'checkbox') {
+            el.checked = saved === 'true';
+          } else {
+            el.value = saved;
+          }
+        }
+      });
+    };
+  </script></body>
+</html>
