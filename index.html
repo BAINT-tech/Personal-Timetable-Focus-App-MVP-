@@ -57,7 +57,11 @@
 </head>
 <body>
   <h1>🧠 Daily Focus System</h1>
-  <p class="small">No pressure. Just show up.</p>  <div class="card">
+  <p class="small">No pressure. Just show up.</p>
+  <div class="card">
+    <strong>🔥 Streak:</strong> <span id="streak">0</span> days
+    <div class="small">Consistency over motivation</div>
+  </div>  <div class="card">
     <h2>🌅 Morning – Learning</h2>
     <div class="task"><input type="checkbox" id="fx" /> Forex basics</div>
     <div class="task"><input type="checkbox" id="crypto" /> Crypto market study</div>
@@ -71,27 +75,51 @@
     <div class="task"><input type="checkbox" id="twitter" /> Twitter / Airdrop research</div>
     <div class="task"><input type="checkbox" id="review" /> Daily review</div>
   </div>  <div class="card">
+    <h2>🪂 Airdrop Tasks</h2>
+    <p class="small">Add, prioritize, and track calmly.</p>
+    <textarea id="airdrops" placeholder="Paste airdrop links here (one per line)"></textarea>
+    <div class="task"><input type="checkbox" id="airdrop_done" /> Mark today’s airdrop work done</div>
+    <label class="small">Priority:</label>
+    <select id="airdrop_priority">
+      <option>Low</option>
+      <option>Medium</option>
+      <option>High</option>
+    </select>
+  </div>  <div class="card">
     <h2>📝 Notes</h2>
     <textarea id="notes" placeholder="What did I learn or notice today?"></textarea>
   </div><button onclick="saveData()">Save Day</button>
 
   <script>
-    const inputs = document.querySelectorAll('input, textarea');
+    const inputs = document.querySelectorAll('input, textarea, select');
+    const todayKey = new Date().toDateString();
 
     function saveData() {
       inputs.forEach(el => {
         if (el.type === 'checkbox') {
-          localStorage.setItem(el.id, el.checked);
+          localStorage.setItem(el.id + todayKey, el.checked);
         } else {
-          localStorage.setItem(el.id, el.value);
+          localStorage.setItem(el.id + todayKey, el.value);
         }
       });
+      updateStreak();
       alert('Saved ✔ Stay consistent');
+    }
+
+    function updateStreak() {
+      let streak = Number(localStorage.getItem('streak')) || 0;
+      const lastDay = localStorage.getItem('lastDay');
+      if (lastDay !== todayKey) {
+        streak += 1;
+        localStorage.setItem('streak', streak);
+        localStorage.setItem('lastDay', todayKey);
+      }
+      document.getElementById('streak').innerText = streak;
     }
 
     window.onload = () => {
       inputs.forEach(el => {
-        const saved = localStorage.getItem(el.id);
+        const saved = localStorage.getItem(el.id + todayKey);
         if (saved !== null) {
           if (el.type === 'checkbox') {
             el.checked = saved === 'true';
@@ -100,6 +128,7 @@
           }
         }
       });
+      document.getElementById('streak').innerText = localStorage.getItem('streak') || 0;
     };
   </script></body>
 </html>
